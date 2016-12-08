@@ -44,12 +44,15 @@ npm install integration-testing-for-humans -g
 ## Usage
 
 First, decide where you'd like to serve this package from, let's say "https://example.com/humans".
-Then, take that path + "/events" and register it as a webhook for each repo whose pull requests
-you wish to test. Select "Pull request" events to be sent to the webhook.
+Then, take that path + "/events" ("https://example.com/humans/events") and register it as a webhook
+for each repo whose pull requests you wish to test. Select "Pull request" events to be sent to the
+webhook.
 
 Then start the server. Using the middleware:
 
 ```js
+var bodyParser = require('body-parser');
+var conditional = require('express-conditional-middleware');
 var express = require('express');
 var humans = require('integration-testing-for-humans');
 var app = express();
@@ -73,6 +76,13 @@ var middleware = humans({
 // arising from the GitHub API, since they will be emitted outside the Express request lifecycle.
 // If you don't register a listener, any errors will be thrown to the run loop and crash the server!
 middleware.on('error', (err) => console.error(err));
+
+// If you want to use the JSON body parser, don't run it on the webhook route since the webhook
+// parser uses the raw data.
+app.use(conditional(
+  (req) => req.url !== '/humans/events',
+  bodyParser.json()
+));
 
 app.use('/humans', middleware);
 
@@ -122,3 +132,8 @@ if present, into the "Details" page.
 ## Thanks
 
 Loosely based on https://developer.github.com/guides/building-a-ci-server/.
+
+## Changelog
+
+* 1.0.1 Fix miscellanous bugs
+* 1.0.0 Initial version
