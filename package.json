@@ -1,0 +1,37 @@
+{
+  "name": "integration-testing-for-humans",
+  "version": "1.0.0",
+  "description": "Because humans are bad at writing Selenium tests and good at clicking stuff.",
+  "bin": "bin/humans.js",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mixmaxhq/integration-testing-for-humans.git"
+  },
+  "keywords": [
+    "integration",
+    "smoke",
+    "testing",
+    "tests",
+    "selenium",
+    "github",
+    "webhook",
+    "status",
+    "CI"
+  ],
+  "author": "Jeff Wear <jeff@mixmax.com> (https://mixmax.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mixmaxhq/integration-testing-for-humans/issues"
+  },
+  "homepage": "https://github.com/mixmaxhq/integration-testing-for-humans#readme",
+  "dependencies": {
+    "express": "^4.14.0",
+    "github-webhook-handler": "^0.6.0",
+    "request": "^2.79.0",
+    "yargs": "^6.5.0"
+  }
+}
