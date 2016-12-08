@@ -73,6 +73,8 @@ function createRouter(options) {
     }, (err) => {
       if (err) routerProxy.emit('error', err);
     });
+  }).on('error', (err) => {
+    routerProxy.emit('error', err);
   }));
 
   routerProxy.use('/test/:owner/:repo/build/:sha',
