@@ -3,7 +3,7 @@
 This package reminds you to run manual tests when you open or update a GitHub pull request.
 
 If you are horrified at the idea of doing anything manually, let alone something so boring as testing,
-may I suggest [you might be more horrified by Selenium](#why-not-selenium-)?
+may I suggest [you might be more horrified by Selenium](#why-not-selenium)?
 
 ## How it works
 
