@@ -46,7 +46,13 @@ function createRouter(options) {
       var obj = Reflect.has(router, prop) ? router : eventEmitter;
       var val = Reflect.get(obj, prop, obj);
       if (typeof val === 'function') {
-        val = val.bind(obj);
+        var origVal = val;
+        val = function(...args) {
+          var ret = origVal.apply(obj, args);
+          // The result of `router.on(...)` should appear to be the router still.
+          if (ret === eventEmitter) ret = routerProxy;
+          return ret;
+        };
       }
       return val;
     }
@@ -67,6 +73,8 @@ function createRouter(options) {
     }, (err) => {
       if (err) routerProxy.emit('error', err);
     });
+  }).on('error', (err) => {
+    routerProxy.emit('error', err);
   }));
 
   routerProxy.use('/test/:owner/:repo/build/:sha',
