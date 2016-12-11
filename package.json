@@ -1,6 +1,6 @@
 {
   "name": "integration-testing-for-humans",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Because humans are bad at writing Selenium tests and good at clicking stuff.",
   "bin": "bin/humans.js",
   "main": "src/index.js",
