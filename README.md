@@ -32,7 +32,7 @@ from a [package script](http://blog.npmjs.org/post/118810260230/building-a-simpl
 run:
 
 ```sh
-yarn add integration-testing-for-humans
+npm install integration-testing-for-humans
 ```
 or
 ```sh
@@ -42,7 +42,7 @@ npm install integration-testing-for-humans --save
 If you'd like to install the standalone server globally:
 
 ```sh
-yarn global add integration-testing-for-humans
+npm install integration-testing-for-humans
 ```
 or
 ```sh
