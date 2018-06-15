@@ -73,7 +73,8 @@ var middleware = humans({
   githubWebhookSecret: '...',
   // The full location (origin + path) of the middleware e.g. "https://example.com/humans".
   location: 'https://example.com/humans',
-  // The name of the default test to run on staging before merging. Optional.
+  // The name of the default test to run on staging before merging. Can contain HTML (e.g. a link
+  // to a fuller description of your test). Optional.
   defaultTest: 'Send an email',
   // The name of a branch. If specified, only PRs targeting this branch will be monitored by this
   // middleware.

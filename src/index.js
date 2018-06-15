@@ -21,7 +21,7 @@ var GitHubClient = require('./GitHubClient');
  *  @param {String} location - he full location (origin + path) of the middleware e.g.
  *    "https://example.com/humans".
  *  @param {String=} defaultTest - The name of the default test to run on staging before merging
- *    e.g. "Send an email".
+ *    e.g. "Send an email". Can contain HTML (e.g. a link to a fuller description of your test).
  *  @param {String=} mergeBranch - (Optional) The name of a branch. If specified, only PRs targeting
  *    this branch will be monitored by this middleware.
  */
