@@ -6,11 +6,14 @@
   "main": "dist/node/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "ci": "npm run build && npm run lint",
+    "ci:commitlint": "commitlint-jenkins --pr-only",
     "build": "del-cli dist/ && tsc",
     "lint:eslint": "if command -v eslint_d >/dev/null; then eslint_d . --cache --ext=\".ts\"; else eslint . --cache; fi",
     "lint": "npm run lint:eslint && tsc -p tsconfig-lint.json",
     "watch": "tsc --watch",
-    "prepublishOnly": "npm run build && if [ \"$CI\" =  ] && [ \"$npm_config_dry_run\" != true ]; then node -p \"JSON.parse(process.env.npm_package_config_manualPublishMessage)\"; exit 1; fi"
+    "prepublishOnly": "npm run build && if [ \"$CI\" =  ] && [ \"$npm_config_dry_run\" != true ]; then node -p \"JSON.parse(process.env.npm_package_config_manualPublishMessage)\"; exit 1; fi",
+    "semantic-release": "semantic-release"
   },
   "repository": {
     "type": "git",
@@ -40,21 +43,45 @@
     "yargs": "^6.5.0"
   },
   "devDependencies": {
+    "@commitlint/cli": "^15.0.0",
+    "@commitlint/config-conventional": "^15.0.0",
     "@mixmaxhq/jest-coverage-config": "^2.2.3",
     "@mixmaxhq/prettier-config": "^1.0.2",
+    "@mixmaxhq/semantic-release-config": "^2.0.2",
     "@mixmaxhq/ts-config": "^2.1.1",
     "@types/jest": "^27.0.2",
     "@typescript-eslint/eslint-plugin": "^5.4.0",
     "@typescript-eslint/parser": "^5.4.0",
+    "cz-conventional-changelog": "^3.3.0",
     "del-cli": "^3.0.1",
     "eslint": "^7.32.0",
     "eslint-config-mixmax": "^5.0.1",
     "jest": "^27.3.1",
     "prettier": "^2.4.1",
+    "semantic-release": "^17.4.7",
     "ts-jest": "^27.0.7",
     "typescript": "^4.5.2"
   },
   "files": [
     "dist"
-  ]
+  ],
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    },
+    "manualPublishMessage": "This repository is configured to use semantic-release for its releases. Please do not release manually.\n"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ],
+    "rules": {
+      "body-max-line-length": [
+        0
+      ]
+    }
+  },
+  "release": {
+    "extends": "@mixmaxhq/semantic-release-config"
+  }
 }
