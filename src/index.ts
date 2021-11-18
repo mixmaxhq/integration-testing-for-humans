@@ -5,6 +5,14 @@ import createWebhookHandler from 'github-webhook-handler';
 
 import GitHubClient from './GitHubClient';
 
+type RouterOptions = {
+  githubAccessToken: string;
+  githubWebhookSecret: string;
+  location: string;
+  defaultTest: string;
+  mergeBranches?: string[];
+};
+
 /**
  * Creates middleware to respond to pull request-related events by asking developers to test staging.
  *
@@ -24,11 +32,12 @@ import GitHubClient from './GitHubClient';
  *    "https://example.com/humans".
  *  @param {String=} defaultTest - The name of the default test to run on staging before merging
  *    e.g. "Send an email". Can contain HTML (e.g. a link to a fuller description of your test).
- *  @param {String=} mergeBranch - (Optional) The name of a branch. If specified, only PRs targeting
- *    this branch will be monitored by this middleware.
+ *  @param {String=} mergeBranches - (Optional) The name of branches. If specified, only PRs targeting
+ *    these branches will be monitored by this middleware.
  */
-function createRouter(options) {
-  const { githubAccessToken, githubWebhookSecret, location, defaultTest, mergeBranch } = options;
+function createRouter(options: RouterOptions) {
+  const { githubAccessToken, githubWebhookSecret, location, defaultTest } = options;
+  const mergeBranches = options.mergeBranches ?? [];
   const client = new GitHubClient({
     accessToken: githubAccessToken,
     location,
@@ -64,7 +73,7 @@ function createRouter(options) {
       .on('pull_request', (data) => {
         // "synchronize" means that someone pushed to the PR branch.
         if (!/(re)?opened|synchronize/.test(data.payload.action)) return;
-        if (mergeBranch && data.payload.pull_request.base.ref !== mergeBranch) return;
+        if (!mergeBranches.includes(data.payload.pull_request.base.ref)) return;
         client.updateStatus(
           {
             repo: data.payload.pull_request.base.repo.full_name,
