@@ -45,6 +45,7 @@
   "devDependencies": {
     "@commitlint/cli": "^15.0.0",
     "@commitlint/config-conventional": "^15.0.0",
+    "@mixmaxhq/commitlint-jenkins": "^1.6.0",
     "@mixmaxhq/jest-coverage-config": "^2.2.3",
     "@mixmaxhq/prettier-config": "^1.0.2",
     "@mixmaxhq/semantic-release-config": "^2.0.2",
