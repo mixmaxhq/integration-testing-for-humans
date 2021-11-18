@@ -1,1 +1,4 @@
+.eslintcache
+dist
+node_modules
 /**/*.js
