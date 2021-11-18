@@ -59,13 +59,13 @@ webhook.
 Then start the server. Using the middleware:
 
 ```js
-var bodyParser = require('body-parser');
-var conditional = require('express-conditional-middleware');
-var express = require('express');
-var humans = require('integration-testing-for-humans');
-var app = express();
+const bodyParser = require('body-parser');
+const conditional = require('express-conditional-middleware');
+const express = require('express');
+const humans = require('integration-testing-for-humans');
+const app = express();
 
-var middleware = humans({
+const middleware = humans({
   // A GitHub access token. Must have the `repo:status` OAuth scope.
   githubAccessToken: '...',
   // The secret you specified for the webhook. If you want to monitor multiple repos just use the
@@ -76,9 +76,9 @@ var middleware = humans({
   // The name of the default test to run on staging before merging. Can contain HTML (e.g. a link
   // to a fuller description of your test). Optional.
   defaultTest: 'Send an email',
-  // The name of a branch. If specified, only PRs targeting this branch will be monitored by this
+  // The name of branches. If specified, only PRs targeting these branches will be monitored by this
   // middleware.
-  mergeBranch: 'master-production'
+  mergeBranches: ['master-production']
 });
 
 // The middleware is an event emitter. You should register an 'error' listener to respond to errors
