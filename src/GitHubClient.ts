@@ -1,8 +1,9 @@
-var request = require('request');
-
+import request from 'request';
 /**
  * Simple client for GitHub's REST API.
  */
+
+
 class GitHubClient {
   /**
    * @param {Object}
@@ -10,7 +11,10 @@ class GitHubClient {
    *  @param {String} location - The full location (origin + path) of the testing middleware e.g.
    *    "https://example.com/humans".
    */
-  constructor({ accessToken, location }) {
+  constructor({
+    accessToken,
+    location
+  }) {
     this._accessToken = accessToken;
     this._location = location;
   }
@@ -24,7 +28,11 @@ class GitHubClient {
    *  @param {Boolean} tested - `true` if the commit has been tested, `false` otherwise.
    * @param {Function<Error>} done - Errback.
    */
-  updateStatus({ repo, sha, tested }, done) {
+  updateStatus({
+    repo,
+    sha,
+    tested
+  }, done) {
     request.post(`https://api.github.com/repos/${repo}/statuses/${sha}`, {
       headers: {
         Authorization: `token ${this._accessToken}`,
@@ -38,13 +46,14 @@ class GitHubClient {
         context: 'Integration Testing for Humans'
       }
     }, (err, resp, body) => {
-      if (err || (!(resp.statusCode >= 200 && resp.statusCode < 300))) {
+      if (err || !(resp.statusCode >= 200 && resp.statusCode < 300)) {
         done(new Error(`${resp.statusCode}: ${JSON.stringify(resp.body)}`));
       } else {
         done();
       }
     });
   }
+
 }
 
-module.exports = GitHubClient;
+export default GitHubClient;

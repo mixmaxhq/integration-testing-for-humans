@@ -1,7 +1,7 @@
-var createWebhookHandler = require('github-webhook-handler');
-var EventEmitter = require('events');
-var express = require('express');
-var GitHubClient = require('./GitHubClient');
+import createWebhookHandler from 'github-webhook-handler';
+import EventEmitter from 'events';
+import express from 'express';
+import GitHubClient from './GitHubClient';
 
 /**
  * Creates middleware to respond to pull request-related events by asking developers to test staging.
@@ -33,80 +33,78 @@ function createRouter(options) {
     defaultTest,
     mergeBranch
   } = options;
-
-  var client = new GitHubClient({ accessToken: githubAccessToken, location });
-
+  var client = new GitHubClient({
+    accessToken: githubAccessToken,
+    location
+  });
   var router = express.Router();
   var eventEmitter = new EventEmitter();
-
   // Use a proxy to mix event emitter functionality into the router without making assumptions about
   // the event emitter's storage (whatever its constructor does).
   var routerProxy = new Proxy(router, {
     get(_, prop) {
       var obj = Reflect.has(router, prop) ? router : eventEmitter;
       var val = Reflect.get(obj, prop, obj);
+
       if (typeof val === 'function') {
         var origVal = val;
-        val = function(...args) {
+
+        val = function (...args) {
           var ret = origVal.apply(obj, args);
           // The result of `router.on(...)` should appear to be the router still.
           if (ret === eventEmitter) ret = routerProxy;
           return ret;
         };
       }
+
       return val;
     }
-  });
 
+  });
   routerProxy.use(createWebhookHandler({
     path: '/events',
     secret: githubWebhookSecret
-  }).on('pull_request', (data) => {
+  }).on('pull_request', data => {
     // "synchronize" means that someone pushed to the PR branch.
     if (!/(re)?opened|synchronize/.test(data.payload.action)) return;
-    if (mergeBranch && (data.payload.pull_request.base.ref !== mergeBranch)) return;
-
+    if (mergeBranch && data.payload.pull_request.base.ref !== mergeBranch) return;
     client.updateStatus({
       repo: data.payload.pull_request.base.repo.full_name,
       sha: data.payload.pull_request.head.sha,
       tested: false
-    }, (err) => {
+    }, err => {
       if (err) routerProxy.emit('error', err);
     });
-  }).on('error', (err) => {
+  }).on('error', err => {
     routerProxy.emit('error', err);
   }));
-
-  routerProxy.use('/test/:owner/:repo/build/:sha',
-    express.Router({ mergeParams: true })
-      .get('/', (req, res) => {
-        var testAction = 'Then click this button.';
-        if (defaultTest) testAction = `${defaultTest} on staging, ${testAction.toLowerCase()}`;
-        res.send(`
+  routerProxy.use('/test/:owner/:repo/build/:sha', express.Router({
+    mergeParams: true
+  }).get('/', (req, res) => {
+    var testAction = 'Then click this button.';
+    if (defaultTest) testAction = `${defaultTest} on staging, ${testAction.toLowerCase()}`;
+    res.send(`
           <h1>Test staging!</h1>
           <p>${testAction}</p>
           <form method="POST" action="${req.originalUrl}/tested">
             <button style="font-size: 14px;">I have tested staging.</button>
           </form>
         `);
-      })
-      .post('/tested', (req, res) => {
-        client.updateStatus({
-          repo: `${req.params.owner}/${req.params.repo}`,
-          sha: req.params.sha,
-          tested: true
-        }, (err) => {
-          if (err) {
-            routerProxy.emit('error', err);
-            res.status(500).send('An error occurred');
-          } else {
-            res.send('You may merge your PR now.');
-          }
-        });
-      })
-  );
-
+  }).post('/tested', (req, res) => {
+    client.updateStatus({
+      repo: `${req.params.owner}/${req.params.repo}`,
+      sha: req.params.sha,
+      tested: true
+    }, err => {
+      if (err) {
+        routerProxy.emit('error', err);
+        res.status(500).send('An error occurred');
+      } else {
+        res.send('You may merge your PR now.');
+      }
+    });
+  }));
   return routerProxy;
 }
 
-module.exports = createRouter;
+export default createRouter;
