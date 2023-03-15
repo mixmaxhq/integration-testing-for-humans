@@ -138,6 +138,12 @@ One idea that we probably will do is make it possible to specify more than one t
 repo-specific tests, in a per-repo `manual_tests.md` file. The middleware will then iframe this file,
 if present, into the "Details" page.
 
+## Publishing a new version
+
+```
+GH_TOKEN=xxx npx semantic-release --no-ci
+```
+
 ## Thanks
 
 Loosely based on https://developer.github.com/guides/building-a-ci-server/.
