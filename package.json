@@ -12,7 +12,7 @@
     "lint:eslint": "if command -v eslint_d >/dev/null; then eslint_d . --cache --ext=\".ts\"; else eslint . --cache; fi",
     "lint": "npm run lint:eslint && tsc -p tsconfig-lint.json",
     "watch": "tsc --watch",
-    "prepublishOnly": "npm run build && if [ \"$CI\" =  ] && [ \"$npm_config_dry_run\" != true ]; then node -p \"JSON.parse(process.env.npm_package_config_manualPublishMessage)\"; exit 1; fi",
+    "prepublishOnly": "npm run build && if [ \"$CI\" = \"\" ] && [ \"$npm_config_dry_run\" != true ]; then node -p \"JSON.parse(process.env.npm_package_config_manualPublishMessage)\"; exit 1; fi",
     "semantic-release": "semantic-release"
   },
   "repository": {
